@@ -52,11 +52,11 @@ class Bullet:
 
         if angle_degrees not in range(1, 90):
             raise InvalidAngleError()
-        self._angle = angle_degrees * (pi/180)
+        self._angle = angle_degrees * (pi / 180)
 
         if force_percentage not in range(101):
             raise InvalidForceError()
-        self._force = (force_percentage/100) * MAX_FORCE
+        self._force = (force_percentage / 100) * MAX_FORCE
 
         self._trajectory = []
         self._position_x = 0
