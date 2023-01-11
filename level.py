@@ -2,6 +2,9 @@ from bullet import Bullet, MAX_X, MAX_Y
 from target import Target
 from typing import List, Tuple
 from matplotlib import pyplot as plt
+from io import BytesIO
+from PySide2.QtGui import QPixmap
+from PySide2.QtWidgets import QMessageBox
 
 
 class IvalidAttemptsError(Exception):
@@ -32,6 +35,7 @@ class Level:
             raise IvalidAttemptsError()
         self._attempts = attempts
         self._targets = targets
+        self._result = False
 
     @property
     def attempts(self) -> int:
@@ -49,34 +53,24 @@ class Level:
 
         return self._targets
 
-    def play(self) -> bool:
+    @property
+    def result(self) -> bool:
         """
-        Simulates the level.
-        Asks for the angle and force each attempt.
-        Returns true if the level was won, false otherwise.
+        Returns the result of the level.
         """
 
-        while self.attempts > 0 and self.targets:
-            self.draw_board()
-            angle = int(input("Give an angle in degrees:"))
-            force = int(input("Give a force percentage:"))
-            bullet = Bullet(angle, force)
-            result = bullet.calculate_trajectory(self.targets)
-            self.draw_trajectory(bullet.trajectory)
+        return self._result
 
-            if result is None:
-                print("Missed!")
-            else:
-                print(f"{result} hit!")
+    def setup_ui(self, window, button, plot, AngleSlider, ForceSlider) -> None:
+        """
+        Sets up the ui for level simulation.
+        """
 
-                if result.hit():
-                    self._targets.remove(result)
-
-            self._attempts -= 1
-
-        if all(str(target) == "Obstacle" for target in self.targets):
-            return True
-        return False
+        self.window = window
+        self.button = button
+        self.plot = plot
+        self.AngleSlider = AngleSlider
+        self.ForceSlider = ForceSlider
 
     def draw_board(self) -> None:
         """
@@ -84,19 +78,25 @@ class Level:
         state of the board.
         """
 
-        plt.figure(figsize=(8, 4))
+        plt.clf()
+        plt.figure(figsize=(8, 4), dpi=200)
         plt.xlim(0, MAX_X + 1)
         plt.ylim(0, MAX_Y + 1)
-        plt.xticks(range(0, MAX_X + 1, 4))
-        plt.yticks(range(0, MAX_Y + 1, 2))
+        plt.xticks([])
+        plt.yticks([])
+
         fig = plt.gcf()
         ax = fig.gca()
-
         ax.add_patch(Bullet.draw())
         for target in self.targets:
             ax.add_patch(target.draw())
 
-        fig.savefig('./board.png')
+        buffer = BytesIO()
+        fig.savefig(buffer)
+        image_data = buffer.getvalue()
+        pixmap = QPixmap()
+        if pixmap.loadFromData(image_data):
+            self.plot.setPixmap(pixmap)
 
     def draw_trajectory(self, trajectory: List[Tuple[float, float]]) -> None:
         """
@@ -106,4 +106,59 @@ class Level:
         x = [p[0] for p in trajectory]
         y = [p[1] for p in trajectory]
         plt.plot(x, y, ':', color="black")
-        plt.savefig('./plot.png')
+
+        buffer = BytesIO()
+        plt.savefig(buffer)
+        image_data = buffer.getvalue()
+        pixmap = QPixmap()
+        if pixmap.loadFromData(image_data):
+            self.plot.setPixmap(pixmap)
+
+    def simulate_attempt(self) -> None:
+        """
+        Simulates the attempt.
+        Draws the board and bullets trajectory.
+        Waits for the angle and force input.
+        Sets result to true if the level was won.
+        """
+
+        angle = self.AngleSlider.value()
+        force = self.ForceSlider.value()
+        bullet = Bullet(angle, force)
+        attempt_result = bullet.calculate_trajectory(self.targets)
+        self.draw_trajectory(bullet.trajectory)
+        self._attempts -= 1
+
+        if attempt_result is None:
+            QMessageBox.information(self.plot, "QMessageBox", f"Missed! Remaining attempts: {self.attempts}")
+        else:
+            QMessageBox.information(self.plot, "QMessageBox", f"{attempt_result} hit! Remaining attempts: {self.attempts}")
+
+            if attempt_result.hit():
+                self._targets.remove(attempt_result)
+
+        self.draw_board()
+
+        if all(str(target) == "Obstacle" for target in self.targets):
+            self._result = True
+
+        if self.result:
+            self.plot.setText("Level Won!")
+            self.button.clicked.disconnect()
+            self.button.setText("Next")
+            self.button.clicked.connect(self.window.nextPage)
+        elif self.attempts == 0:
+            self.plot.setText("Level Lost!")
+            self.button.clicked.disconnect()
+            self.button.setText("Next")
+            self.button.clicked.connect(self.window.exitPage)
+
+    def play(self):
+        """
+        Initializes the level simulation.
+        """
+
+        self.button.clicked.disconnect()
+        self.button.clicked.connect(self.simulate_attempt)
+        self.button.setText("Go")
+        self.draw_board()

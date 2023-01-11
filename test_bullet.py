@@ -23,11 +23,6 @@ def test_bullet_init_force_error():
         Bullet(45, 101)
 
 
-def test_check_position():
-    bullet = Bullet(45, 100)
-    assert bullet.check_position() is True
-
-
 def test_calculate_trajectory_empty():
     bullet = Bullet(45, 100)
     assert bullet.calculate_trajectory([]) is None
@@ -63,6 +58,6 @@ def test_calculate_trajectory_obstacle_target_boss_hit():
     assert bullet.calculate_trajectory(targets) is targets[2]
 
 
-def test_target_draw():
+def test_bullet_draw():
     circle = plt.Circle((0, 0), 0.5, color="red")
     assert str(Bullet.draw()) == str(circle)

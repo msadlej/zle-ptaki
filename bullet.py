@@ -94,19 +94,6 @@ class Bullet:
 
         return round(self._position_x), round(self._position_y)
 
-    def check_position(self) -> bool:
-        """
-        Checks if the bullet is inside bounds.
-        """
-
-        if self._position_x > MAX_X:
-            return False
-        if self._position_y < 0:
-            return False
-        if self._position_y > MAX_Y:
-            return False
-        return True
-
     def calculate_trajectory(self, targets: List[Target]) -> Target:
         """
         Calculates the trajectory of the bullet.
@@ -119,7 +106,7 @@ class Bullet:
         velocity_y = self.force * sin(self.angle)
         time = 0
 
-        while self.check_position():
+        while self._position_x <= MAX_X and self._position_y >= 0 and self._position_y >= 0:
             self._trajectory.append((self._position_x, self._position_y))
 
             for target in targets:
