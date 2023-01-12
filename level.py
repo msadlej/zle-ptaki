@@ -4,7 +4,6 @@ from typing import List, Tuple
 from matplotlib import pyplot as plt
 from io import BytesIO
 from PySide2.QtGui import QPixmap
-from PySide2.QtWidgets import QMessageBox
 
 
 class IvalidAttemptsError(Exception):
@@ -21,12 +20,13 @@ class Level:
     :param type: int
     """
 
-    def __init__(self, attempts: int, targets: List[Target]) -> None:
+    def __init__(self, attempts: int, targets: List[Target], window) -> None:
         """
         Creates an instance of class Level.
-        Takes two arguments:
-        the number of attempts permitted
-        and the list of targets on the board.
+        Takes three arguments:
+        the number of attempts permitted,
+        the list of targets on the board
+        and the UI window.
         Raises IvalidAttemptsError if the number of attempts given
         is less than 1.
         """
@@ -36,6 +36,7 @@ class Level:
         self._attempts = attempts
         self._targets = targets
         self._result = False
+        self.window = window
 
     @property
     def attempts(self) -> int:
@@ -61,17 +62,6 @@ class Level:
 
         return self._result
 
-    def setup_ui(self, window, button, plot, AngleSlider, ForceSlider) -> None:
-        """
-        Sets up the ui for level simulation.
-        """
-
-        self.window = window
-        self.button = button
-        self.plot = plot
-        self.AngleSlider = AngleSlider
-        self.ForceSlider = ForceSlider
-
     def draw_board(self) -> None:
         """
         Creates a pyplot figure representing the current
@@ -96,7 +86,7 @@ class Level:
         image_data = buffer.getvalue()
         pixmap = QPixmap()
         if pixmap.loadFromData(image_data):
-            self.plot.setPixmap(pixmap)
+            self.window.ui.plot.setPixmap(pixmap)
 
     def draw_trajectory(self, trajectory: List[Tuple[float, float]]) -> None:
         """
@@ -112,7 +102,7 @@ class Level:
         image_data = buffer.getvalue()
         pixmap = QPixmap()
         if pixmap.loadFromData(image_data):
-            self.plot.setPixmap(pixmap)
+            self.window.ui.plot.setPixmap(pixmap)
 
     def simulate_attempt(self) -> None:
         """
@@ -122,43 +112,39 @@ class Level:
         Sets result to true if the level was won.
         """
 
-        angle = self.AngleSlider.value()
-        force = self.ForceSlider.value()
+        angle = self.window.ui.AngleSlider.value()
+        force = self.window.ui.ForceSlider.value()
         bullet = Bullet(angle, force)
         attempt_result = bullet.calculate_trajectory(self.targets)
         self.draw_trajectory(bullet.trajectory)
         self._attempts -= 1
 
         if attempt_result is None:
-            QMessageBox.information(self.plot, "QMessageBox", f"Missed! Remaining attempts: {self.attempts}")
+            self.window.messageBox("Attempt info", f"Missed!\nRemaining attempts: {self.attempts}")
         else:
-            QMessageBox.information(self.plot, "QMessageBox", f"{attempt_result} hit! Remaining attempts: {self.attempts}")
+            self.window.messageBox("Attempt info", f"{attempt_result} hit!\nRemaining attempts: {self.attempts}")
 
             if attempt_result.hit():
                 self._targets.remove(attempt_result)
-
         self.draw_board()
+        self.window.resetSliders()
 
         if all(str(target) == "Obstacle" for target in self.targets):
             self._result = True
 
-        if self.result:
-            self.plot.setText("Level Won!")
-            self.button.clicked.disconnect()
-            self.button.setText("Next")
-            self.button.clicked.connect(self.window.nextPage)
-        elif self.attempts == 0:
-            self.plot.setText("Level Lost!")
-            self.button.clicked.disconnect()
-            self.button.setText("Next")
-            self.button.clicked.connect(self.window.exitPage)
+        if self.result or self.attempts == 0:
+            self.window.ui.button.clicked.disconnect()
+            self.window.nextLevel()
 
     def play(self):
         """
         Initializes the level simulation.
+        Draws the starting board.
+        Sets up the UI.
         """
 
-        self.button.clicked.disconnect()
-        self.button.clicked.connect(self.simulate_attempt)
-        self.button.setText("Go")
+        self.window.ui.button.clicked.disconnect()
+        self.window.ui.button.clicked.connect(self.simulate_attempt)
+        self.window.ui.button.setText("Go")
+        self.window.resetSliders()
         self.draw_board()
