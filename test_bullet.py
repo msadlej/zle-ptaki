@@ -7,7 +7,7 @@ from matplotlib import pyplot as plt
 
 def test_bullet_init():
     bullet = Bullet(45, 100)
-    assert bullet.angle == pytest.approx(pi/4)
+    assert bullet.angle == pytest.approx(pi / 4)
     assert bullet.force == 25
     assert bullet.trajectory == []
     assert bullet.position == (0, 0)
@@ -40,10 +40,16 @@ def test_calculate_trajectory_target_miss():
     assert bullet.calculate_trajectory([target]) is None
 
 
+def test_calculate_trajectory_obstacle_hit():
+    bullet = Bullet(45, 96)
+    obstacle = Obstacle(32, 16)
+    assert bullet.calculate_trajectory([obstacle]) is obstacle
+
+
 def test_calculate_trajectory_obstacle_miss():
     bullet = Bullet(45, 100)
-    target = Obstacle(32, 16)
-    assert bullet.calculate_trajectory([target]) is None
+    obstacle = Obstacle(32, 16)
+    assert bullet.calculate_trajectory([obstacle]) is None
 
 
 def test_calculate_trajectory_obstacle_target_hit():
@@ -52,10 +58,30 @@ def test_calculate_trajectory_obstacle_target_hit():
     assert bullet.calculate_trajectory(targets) is targets[1]
 
 
+def test_calculate_trajectory_obstacle_target_miss():
+    bullet = Bullet(45, 69)
+    targets = [Obstacle(32, 16), Target(32, 16)]
+    assert bullet.calculate_trajectory(targets) is None
+
+
 def test_calculate_trajectory_obstacle_target_boss_hit():
-    bullet = Bullet(45, 100)
-    targets = [Obstacle(32, 16), Target(32, 16), Boss(1, 0, 2)]
+    bullet = Bullet(45, 69)
+    targets = [Obstacle(32, 16), Target(32, 16), Boss(28, 0, 2)]
     assert bullet.calculate_trajectory(targets) is targets[2]
+
+
+def test_calculate_trajectory_obstacle_target_boss_miss():
+    bullet = Bullet(45, 50)
+    targets = [Obstacle(32, 16), Target(32, 16), Boss(28, 0, 2)]
+    assert bullet.calculate_trajectory(targets) is None
+
+
+def test_calculate_trajectory_multiple():
+    bullet = Bullet(45, 71)
+    targets = [Target(32, 0), Obstacle(16, 8), Target(16, 8)]
+    assert bullet.calculate_trajectory(targets) is targets[2]
+    targets = [Target(32, 0), Obstacle(16, 8)]
+    assert bullet.calculate_trajectory(targets) is targets[0]
 
 
 def test_bullet_draw():

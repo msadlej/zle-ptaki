@@ -27,6 +27,8 @@ class ZlePtakiWindow(QMainWindow):
         self.levels = []
         self.current_level = 0
         self.resetSliders()
+        self.ui.AngleSlider.valueChanged.connect(self.updateAngleSpinBox)
+        self.ui.ForceSlider.valueChanged.connect(self.updateForceSpinBox)
 
     @property
     def number_of_levels(self) -> int:
@@ -41,10 +43,30 @@ class ZlePtakiWindow(QMainWindow):
         Resets the sliders to starting positions.
         """
 
-        self.ui.AngleSlider.setValue(0)
-        self.ui.ForceSlider.setValue(0)
+        self.ui.AngleSlider.setValue(1)
+        self.ui.ForceSlider.setValue(1)
+        self.updateAngleSpinBox()
+        self.updateForceSpinBox()
+
+    def updateAngleSpinBox(self) -> None:
+        """
+        Updates the Angle spinBox value.
+        """
+
+        self.ui.AngleSpinBox.setValue(self.ui.AngleSlider.value())
+
+    def updateForceSpinBox(self) -> None:
+        """
+        Updates the Force spinBox value.
+        """
+
+        self.ui.ForceSpinBox.setValue(self.ui.ForceSlider.value())
 
     def messageBox(self, title: str, message: str) -> None:
+        """
+        Displays a message box with given title and message.
+        """
+
         QMessageBox.information(self, title, message)
 
     def addLevel(self, attempts: int, targets: List[Target]) -> None:
@@ -110,9 +132,11 @@ def main(args):
     app = QApplication(args)
     window = ZlePtakiWindow()
 
-    window.addLevel(1, [Target(32, 0)])
-    window.addLevel(2, [Obstacle(32, 16), Target(32, 16)])
-    window.addLevel(4, [Obstacle(32, 16), Target(32, 16), Boss(28, 0, 2)])
+    window.addLevel(2, [Target(32, 0)])
+    window.addLevel(3, [Obstacle(32, 16), Target(32, 16)])
+    window.addLevel(4, [Obstacle(16, 8), Target(16, 8), Target(32, 0)])
+    window.addLevel(5, [Boss(16, 0, 2), Obstacle(8, 15), Target(8, 15)])
+    window.addLevel(6, [Obstacle(32, 16), Target(32, 16), Boss(16, 0, 3)])
 
     window.startLevel()
     window.show()

@@ -3,15 +3,18 @@ from matplotlib import pyplot as plt
 
 
 class InvalidPositionError(Exception):
-    pass
+    def __init__(self) -> None:
+        super().__init__("Position cannot be negative!")
 
 
 class InvalidHeightError(Exception):
-    pass
+    def __init__(self) -> None:
+        super().__init__("Height cannot be less than one!")
 
 
 class InvalidHealthError(Exception):
-    pass
+    def __init__(self) -> None:
+        super().__init__("Health cannot be less than one!")
 
 
 class Target:
@@ -98,6 +101,10 @@ class Obstacle(Target):
 
     @property
     def height(self) -> int:
+        """
+        Returns the height of the obstacle.
+        """
+
         return self._height
 
     @property
@@ -160,6 +167,10 @@ class Boss(Target):
 
     @property
     def health(self) -> int:
+        """
+        Returns the health of the Boss.
+        """
+
         return self._health
 
     @property

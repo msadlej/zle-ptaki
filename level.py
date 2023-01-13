@@ -2,12 +2,13 @@ from bullet import Bullet, MAX_X, MAX_Y
 from target import Target
 from typing import List, Tuple
 from matplotlib import pyplot as plt
-from io import BytesIO
 from PySide2.QtGui import QPixmap
+from io import BytesIO
 
 
 class IvalidAttemptsError(Exception):
-    pass
+    def __init__(self) -> None:
+        super().__init__("Number of attempts cannot be less than one!")
 
 
 class Level:
@@ -18,6 +19,12 @@ class Level:
 
     :param attempts: Number of permitted attempts for the level
     :param type: int
+
+    :param result: Result of the Level
+    :param type: bool
+
+    :param window: UI window
+    :param type: ZlePtakiWindow
     """
 
     def __init__(self, attempts: int, targets: List[Target], window) -> None:

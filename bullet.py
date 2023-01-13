@@ -12,11 +12,13 @@ TIME_STEP = 0.01
 
 
 class InvalidAngleError(Exception):
-    pass
+    def __init__(self) -> None:
+        super().__init__("Angle has to be an integer between 1 and 90 degrees!")
 
 
 class InvalidForceError(Exception):
-    pass
+    def __init__(self) -> None:
+        super().__init__("Force has to be an integer between 1 and 100 percent!")
 
 
 class Bullet:
