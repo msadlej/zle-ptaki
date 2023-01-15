@@ -75,6 +75,7 @@ class Level:
         state of the board.
         """
 
+        plt.close()
         plt.clf()
         plt.figure(figsize=(8, 4), dpi=200)
         plt.xlim(0, MAX_X + 1)
