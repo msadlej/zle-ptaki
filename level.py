@@ -1,5 +1,5 @@
-from bullet import Bullet, MAX_X, MAX_Y
 from target import Target
+from bullet import Bullet, MAX_X, MAX_Y
 from typing import List, Tuple
 from matplotlib import pyplot as plt
 from PySide2.QtGui import QPixmap

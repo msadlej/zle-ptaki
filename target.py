@@ -36,7 +36,7 @@ class Target:
         is less than 0.
         """
 
-        if position_x < 0 or position_y < 0:
+        if position_x <= 0 or position_y < 0:
             raise InvalidPositionError()
 
         self._position_x = position_x

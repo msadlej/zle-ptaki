@@ -1,7 +1,7 @@
-from math import cos, sin, pi
-from typing import List, Tuple
 from target import Target
+from typing import List, Tuple
 from matplotlib import pyplot as plt
+from math import cos, sin, pi
 
 
 MAX_X = 32

@@ -1,25 +1,25 @@
 from bullet import Bullet, InvalidAngleError, InvalidForceError
 from target import Target, Obstacle, Boss
-import pytest
-from math import pi
 from matplotlib import pyplot as plt
+from math import pi
+from pytest import raises, approx
 
 
 def test_bullet_init():
     bullet = Bullet(45, 100)
-    assert bullet.angle == pytest.approx(pi / 4)
+    assert bullet.angle == approx(pi / 4)
     assert bullet.force == 25
     assert bullet.trajectory == []
     assert bullet.position == (0, 0)
 
 
 def test_bullet_init_angle_error():
-    with pytest.raises(InvalidAngleError):
+    with raises(InvalidAngleError):
         Bullet(-1, 100)
 
 
 def test_bullet_init_force_error():
-    with pytest.raises(InvalidForceError):
+    with raises(InvalidForceError):
         Bullet(45, 101)
 
 

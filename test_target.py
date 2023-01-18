@@ -2,8 +2,8 @@ from target import (
     Target, Obstacle, Boss,
     InvalidHealthError, InvalidHeightError, InvalidPositionError
 )
-import pytest
 from matplotlib import pyplot as plt
+from pytest import raises
 
 
 def test_target_init():
@@ -13,12 +13,12 @@ def test_target_init():
 
 
 def test_target_init_error_x():
-    with pytest.raises(InvalidPositionError):
+    with raises(InvalidPositionError):
         Target(-1, 1)
 
 
 def test_target_init_error_y():
-    with pytest.raises(InvalidPositionError):
+    with raises(InvalidPositionError):
         Target(1, -1)
 
 
@@ -49,7 +49,7 @@ def test_obstacle_init():
 
 
 def test_obstacle_init_error():
-    with pytest.raises(InvalidHeightError):
+    with raises(InvalidHeightError):
         Obstacle(1, 0)
 
 
@@ -85,7 +85,7 @@ def test_boss_init():
 
 
 def test_boss_init_error():
-    with pytest.raises(InvalidHealthError):
+    with raises(InvalidHealthError):
         Boss(1, 0, -1)
 
 

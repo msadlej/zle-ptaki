@@ -1,5 +1,5 @@
 from level import Level, IvalidAttemptsError
-import pytest
+from pytest import raises
 
 
 def test_level_init():
@@ -11,5 +11,5 @@ def test_level_init():
 
 
 def test_level_init_error():
-    with pytest.raises(IvalidAttemptsError):
+    with raises(IvalidAttemptsError):
         Level(0, [], "window")
