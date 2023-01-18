@@ -24,11 +24,27 @@ class ZlePtakiWindow(QMainWindow):
         super().__init__(parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.levels = []
-        self.current_level = 0
+        self._levels = []
+        self._current_level = 0
         self.resetSliders()
         self.ui.AngleSlider.valueChanged.connect(self.updateAngleSpinBox)
         self.ui.ForceSlider.valueChanged.connect(self.updateForceSpinBox)
+
+    @property
+    def levels(self) -> List[Level]:
+        """
+        Returns the list of levels.
+        """
+
+        return self._levels
+
+    @property
+    def current_level(self) -> int:
+        """
+        Returns the number of the current level.
+        """
+
+        return self._current_level
 
     @property
     def number_of_levels(self) -> int:
@@ -75,7 +91,7 @@ class ZlePtakiWindow(QMainWindow):
         """
 
         level = Level(attempts, targets, self)
-        self.levels.append(level)
+        self._levels.append(level)
 
     def nextLevel(self) -> None:
         """
@@ -92,7 +108,7 @@ class ZlePtakiWindow(QMainWindow):
         self.ui.plot.setText("Level Completed!")
         self.ui.button.setText("Next")
 
-        self.current_level += 1
+        self._current_level += 1
         if self.current_level == self.number_of_levels:
             self.ui.button.clicked.connect(self.gameWonPage)
             return
@@ -136,7 +152,7 @@ def main(args):
     window.addLevel(3, [Obstacle(32, 16), Target(32, 16)])
     window.addLevel(4, [Obstacle(16, 8), Target(16, 8), Target(32, 0)])
     window.addLevel(5, [Boss(16, 0, 2), Obstacle(8, 15), Target(8, 15)])
-    window.addLevel(6, [Obstacle(32, 16), Target(32, 16), Boss(16, 0, 3)])
+    window.addLevel(6, [Obstacle(32, 16), Target(32, 16), Obstacle(8, 4), Boss(16, 0, 3)])
 
     window.startLevel()
     window.show()
