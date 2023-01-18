@@ -1,8 +1,8 @@
-from level import Level
 from target import Target, Obstacle, Boss
+from level import Level
 from typing import List
-from ui_zle_ptaki import Ui_MainWindow
 from PySide2.QtWidgets import QApplication, QMainWindow, QMessageBox
+from ui_zle_ptaki import Ui_MainWindow
 import sys
 
 
