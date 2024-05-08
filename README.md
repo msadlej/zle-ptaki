@@ -12,5 +12,5 @@ pip install -r requirements.txt
 ## Usage
 To start the game, run the following command:
 ```bash
-python zle_ptaki.py
+python3 zle_ptaki.py
 ```
