@@ -1,9 +1,9 @@
-from target import Target, Obstacle, Boss
-from level import Level
+from lib.target import Target, Obstacle, Boss
+from lib.level import Level
 from typing import List
 from PySide2.QtWidgets import QApplication, QMainWindow, QMessageBox
 from PySide2.QtGui import QPixmap
-from ui_zle_ptaki import Ui_MainWindow
+from lib.ui_zle_ptaki import Ui_MainWindow
 import sys
 
 
@@ -148,9 +148,15 @@ class ZlePtakiWindow(QMainWindow):
 
         self.setPlot(level.draw_trajectory())
         if attempt_result is None:
-            QMessageBox.information(self, "Attempt info", f"Missed!\nRemaining attempts: {level.attempts}")
+            QMessageBox.information(
+                self, "Attempt info", f"Missed!\nRemaining attempts: {level.attempts}"
+            )
         else:
-            QMessageBox.information(self, "Attempt info", f"{attempt_result} hit!\nRemaining attempts: {level.attempts}")
+            QMessageBox.information(
+                self,
+                "Attempt info",
+                f"{attempt_result} hit!\nRemaining attempts: {level.attempts}",
+            )
 
         self.setPlot(level.draw_board())
         self.resetSliders()
@@ -168,7 +174,11 @@ class ZlePtakiWindow(QMainWindow):
         self.ui.button.setText("Go")
         self.resetSliders()
         self.setPlot(level.draw_board())
-        QMessageBox.information(self, f"Level {self.current_level + 1}", f"Number of attempts: {level.attempts}")
+        QMessageBox.information(
+            self,
+            f"Level {self.current_level + 1}",
+            f"Number of attempts: {level.attempts}",
+        )
         self.ui.button.clicked.connect(self.startAttempt)
 
     def startGame(self) -> None:
@@ -190,7 +200,9 @@ def main(args):
     window.addLevel(3, [Obstacle(32, 16), Target(32, 16)])
     window.addLevel(4, [Obstacle(16, 8), Target(16, 8), Target(32, 0)])
     window.addLevel(5, [Boss(16, 0, 2), Obstacle(8, 15), Target(8, 15)])
-    window.addLevel(6, [Obstacle(32, 16), Target(32, 16), Obstacle(8, 4), Boss(16, 0, 3)])
+    window.addLevel(
+        6, [Obstacle(32, 16), Target(32, 16), Obstacle(8, 4), Boss(16, 0, 3)]
+    )
 
     window.startGame()
     window.show()
