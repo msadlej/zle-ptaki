@@ -1,6 +1,10 @@
 from target import (
-    Target, Obstacle, Boss,
-    InvalidHealthError, InvalidHeightError, InvalidPositionError
+    Target,
+    Obstacle,
+    Boss,
+    InvalidHealthError,
+    InvalidHeightError,
+    InvalidPositionError,
 )
 from matplotlib import pyplot as plt
 from pytest import raises
