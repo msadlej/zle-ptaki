@@ -1,4 +1,4 @@
-from target import (
+from lib.target import (
     Target,
     Obstacle,
     Boss,

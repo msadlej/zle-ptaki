@@ -1,4 +1,4 @@
-from target import Target
+from lib.target import Target
 from typing import List, Tuple
 from matplotlib import pyplot as plt
 from math import cos, sin, pi
@@ -108,7 +108,11 @@ class Bullet:
         velocity_y = self.force * sin(self.angle)
         time = 0
 
-        while self._position_x <= MAX_X and self._position_y >= 0 and self._position_y >= 0:
+        while (
+            self._position_x <= MAX_X
+            and self._position_y >= 0
+            and self._position_y >= 0
+        ):
             self._trajectory.append((self._position_x, self._position_y))
 
             for target in targets:

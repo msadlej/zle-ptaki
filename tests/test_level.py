@@ -1,5 +1,5 @@
-from target import Target, Obstacle
-from level import Level, IvalidAttemptsError
+from lib.target import Target, Obstacle
+from lib.level import Level, IvalidAttemptsError
 from pytest import raises
 
 

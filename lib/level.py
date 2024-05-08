@@ -1,5 +1,5 @@
-from target import Target
-from bullet import Bullet, MAX_X, MAX_Y
+from lib.target import Target
+from lib.bullet import Bullet, MAX_X, MAX_Y
 from typing import List, Tuple
 from matplotlib import pyplot as plt
 from io import BytesIO
@@ -107,7 +107,7 @@ class Level:
 
         x = [p[0] for p in self.trajectory]
         y = [p[1] for p in self.trajectory]
-        plt.plot(x, y, ':', color="black")
+        plt.plot(x, y, ":", color="black")
 
         buffer = BytesIO()
         plt.savefig(buffer)

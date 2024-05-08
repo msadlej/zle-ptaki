@@ -1,5 +1,5 @@
-from bullet import Bullet, InvalidAngleError, InvalidForceError
-from target import Target, Obstacle, Boss
+from lib.bullet import Bullet, InvalidAngleError, InvalidForceError
+from lib.target import Target, Obstacle, Boss
 from matplotlib import pyplot as plt
 from math import pi
 from pytest import raises, approx

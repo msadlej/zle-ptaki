@@ -181,8 +181,7 @@ class Boss(Target):
 
         x = self._position_x
         y = self._position_y
-        return [(x, y), (x + 1, y),
-                (x, y + 1), (x + 1, y + 1)]
+        return [(x, y), (x + 1, y), (x, y + 1), (x + 1, y + 1)]
 
     def hit(self) -> bool:
         """
